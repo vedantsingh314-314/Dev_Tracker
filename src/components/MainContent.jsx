@@ -1,4 +1,5 @@
 import React from 'react'
+import Tasks from './Tasks'
 
 const MainContent = ({currentview}) => {
     if (currentview === "dashboard") {
@@ -10,7 +11,7 @@ const MainContent = ({currentview}) => {
     } else if (currentview === "tasks") {
         return (
             <div style={{ border: '1px solid red', padding: '10px' }}>
-                this is tasks
+                <Tasks />
             </div>
         )
     }

@@ -1,0 +1,12 @@
+.layout {
+  display: flex;
+  height: calc(100vh - 60px); /* adjust based on navbar height */
+}
+
+.layout > *:first-child {
+  width: 250px; /* Sidebar width */
+}
+
+.layout > *:last-child {
+  flex: 1; /* MainContent takes remaining space */
+}

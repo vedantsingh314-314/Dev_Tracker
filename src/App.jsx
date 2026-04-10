@@ -4,13 +4,16 @@ import Sidebar from './components/Sidebar'
 import './App.css'
 import { useState } from 'react'
 
+
 function App() {
   const [veiw,setveiw]=useState('tasks');
   return (
     <>
       <Navbar />
-      <Sidebar changeView={setveiw} />
-      <MainContent currentview={veiw} />
+      <div className="layout">
+        <Sidebar changeView={setveiw} />
+        <MainContent currentview={veiw} />
+      </div>
     </>
   )
 }
