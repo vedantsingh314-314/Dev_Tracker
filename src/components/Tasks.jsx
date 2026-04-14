@@ -1,8 +1,25 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+
 const Tasks = () => {
-    const [tasks, setTasks] = useState([]); // The history of all tasks
+    const [tasks, setTasks] = useState(() => {
+        const saveditems = localStorage.getItem('myTasks');
+        if (saveditems) {
+            return JSON.parse(saveditems);
+        }
+        else {
+            return [];
+        }
+    })// THIS IS TASKS ARRAY LAZY INSTALLATION 
+
     const [newTask, setNewTask] = useState(""); // The current text being typed
+    useEffect(() => {
+        localStorage.setItem('myTasks', JSON.stringify(tasks));
+    }, [tasks]);
+
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         let newtask = {
@@ -30,7 +47,7 @@ const Tasks = () => {
         );
     };
     return (
-        <div>
+        <div className='app-container'>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
