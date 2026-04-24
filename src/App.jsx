@@ -3,6 +3,7 @@ import MainContent from './components/MainContent'
 import Sidebar from './components/Sidebar'
 import Pomodoro from './components/pomodoro'
 import './App.css'
+import GithubHeatmap from './components/GithubHeatmap'
 import { useState } from 'react'
 
 

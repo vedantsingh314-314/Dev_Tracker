@@ -1,78 +1,72 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 
-export default function Pomodoro() {
-  const SESSION_TIME = 25 * 60;
-  const BREAK_TIME = 5 * 60;
+const Pomodoro = () => {
+    // 1. State
+    const [timeLeft, setTimeLeft] = useState(1500); 
+    const [isRunning, setIsRunning] = useState(false);
+    
+    // 2. The Anti-Lag Sticky Note
+    const expectedEndTimeRef = useRef(null);
 
-  const [time, setTime] = useState(SESSION_TIME);
-  const [isRunning, setIsRunning] = useState(false);
-  const [isSession, setIsSession] = useState(true);
+    // 3. The Timer Engine (The part you will study later!)
+    useEffect(() => {
+        let intervalId;
 
-  useEffect(() => {
-    let timer;
+        if (isRunning) {
+            expectedEndTimeRef.current = Date.now() + (timeLeft * 1000);
 
-    if (isRunning) {
-      timer = setInterval(() => {
-        setTime((prev) => {
-          if (prev === 0) {
-            const nextMode = !isSession;
-            setIsSession(nextMode);
-            return nextMode ? SESSION_TIME : BREAK_TIME;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
+            intervalId = setInterval(() => {
+                const now = Date.now();
+                const distance = expectedEndTimeRef.current - now; 
 
-    return () => clearInterval(timer);
-  }, [isRunning, isSession]);
+                if (distance <= 0) {
+                    clearInterval(intervalId);
+                    setTimeLeft(0);
+                    setIsRunning(false);
+                    const today= new Date().toISOString().split('T')[0];
+                    const storedData=JSON.parse(localStorage.getItem('pomodoroData')) || {};
+                    const currentCount = storedData[today] || 0; 
+                    storedData[today] = currentCount + 1;
+                    localStorage.setItem('pomodoroData', JSON.stringify(storedData));
+                    alert("Pomodoro Complete! Take a break."); 
+                } else {
+                    setTimeLeft(Math.ceil(distance / 1000));
+                }
+            }, 100); 
+        }
 
-  const formatTime = (t) => {
-    const min = Math.floor(t / 60);
-    const sec = t % 60;
-    return `${min.toString().padStart(2, "0")}:${sec
-      .toString()
-      .padStart(2, "0")}`;
-  };
+        return () => clearInterval(intervalId);
+    }, [isRunning, timeLeft]); 
 
-  const handleReset = () => {
-    setIsRunning(false);
-    setIsSession(true);
-    setTime(SESSION_TIME);
-  };
+    // 4. Button Logic
+    const toggleTimer = () => setIsRunning(!isRunning);
+    const resetTimer = () => {
+        setIsRunning(false);
+        setTimeLeft(1500);
+    };
 
-  return (
-    <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-900 to-black text-white">
-      <div className="bg-gray-800 p-8 rounded-2xl shadow-2xl text-center w-80">
-        
-        <h1 className="text-2xl font-bold mb-4 tracking-wide">
-          {isSession ? "Focus Time" : "Break Time"}
-        </h1>
+    // 5. Time Math
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
-        <div className="text-6xl font-mono mb-6">
-          {formatTime(time)}
+    // 6. UI
+    return (
+        <div className="pomodoro-container">
+            <h2>Pomodoro Timer</h2>
+            <div className="timer-display">
+                {formattedTime}
+            </div>
+            <div className="timer-buttons">
+                <button onClick={toggleTimer}>
+                    {isRunning ? 'Pause' : 'Start'}
+                </button>
+                <button onClick={resetTimer}>
+                    Reset
+                </button>
+            </div>
         </div>
+    );
+};
 
-        <div className="flex justify-center gap-4">
-          <button
-            onClick={() => setIsRunning(!isRunning)}
-            className="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg transition"
-          >
-            {isRunning ? "Pause" : "Start"}
-          </button>
-
-          <button
-            onClick={handleReset}
-            className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition"
-          >
-            Reset
-          </button>
-        </div>
-
-        <p className="mt-4 text-sm text-gray-400">
-          {isSession ? "Stay focused." : "Take a breath."}
-        </p>
-      </div>
-    </div>
-  );
-}
+export default Pomodoro;

@@ -1,11 +1,14 @@
 import React from 'react'
 import Tasks from './Tasks'
+import GithubHeatmap from './GithubHeatmap'
 
-const MainContent = ({currentview}) => {
+const MainContent = ({ currentview }) => {
     if (currentview === "dashboard") {
         return (
             <div style={{ border: '1px solid red', padding: '10px' }}>
-                this is dashboard
+                <div className="your-dashboard-wrapper">
+                    <GithubHeatmap />
+                </div>
             </div>
         )
     } else if (currentview === "tasks") {
