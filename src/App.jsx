@@ -1,25 +1,24 @@
+import { useState } from 'react'
 import Navbar from './components/Navbar'
 import MainContent from './components/MainContent'
 import Sidebar from './components/Sidebar'
-import Pomodoro from './components/pomodoro'
+import Pomodoro from './components/Pomodoro'
 import './App.css'
-import GithubHeatmap from './components/GithubHeatmap'
-import { useState } from 'react'
-
 
 function App() {
-  const [veiw,setveiw]=useState('tasks');
+  const [view, setView] = useState('dashboard');
+  
   return (
-    <>
+    <div className="app-wrapper">
       <Navbar />
       <div className="layout">
-        <Sidebar changeView={setveiw} />
-        <div style={{ flex: 1, padding: '20px', overflowY: 'auto' }}>
-          <MainContent currentview={veiw} />
-        <Pomodoro />
-    </div>
+        <Sidebar changeView={setView} currentView={view} />
+        <div className="main-scroll-area">
+          <MainContent currentview={view} />
+          <Pomodoro />
+        </div>
       </div>
-    </>
+    </div>
   )
 }
 

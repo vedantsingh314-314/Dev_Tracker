@@ -1,11 +1,20 @@
 import React from 'react'
 
-const Sidebar = ({changeView}) => {
+const Sidebar = ({ changeView, currentView }) => {
   return (
-    <div style={{ border: '1px solid red', padding: '10px' }}>
-      this  is Sidebar
-      <button onClick={()=> changeView('dashboard')}>Dashboard</button>
-      <button onClick={() => changeView('tasks')}>Tasks</button>
+    <div className="sidebar">
+      <button 
+        className={currentView === 'dashboard' ? 'active' : ''} 
+        onClick={() => changeView('dashboard')}
+      >
+        📊 Dashboard
+      </button>
+      <button 
+        className={currentView === 'tasks' ? 'active' : ''} 
+        onClick={() => changeView('tasks')}
+      >
+        ✅ Tasks
+      </button>
     </div>
   )
 }
